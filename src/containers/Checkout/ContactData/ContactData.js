@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Button from '../../../components/UI/Button/Button';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
@@ -110,7 +111,7 @@ class ContactData extends Component {
     this.setState({ loadingOrder: true }, () => {
       axiosOrderInstance
         .post('/orders.json', order)
-        .then(response => console.log(response))
+        .then(response => console.log(order))
         .catch(error => console.log(error))
         .finally(() => {
           this.setState({ loadingOrder: false });
@@ -199,4 +200,11 @@ class ContactData extends Component {
   }
 }
 
-export default ContactData;
+const mapStateToProps = state => {
+  return {
+    ingredients: state.ingredients,
+    price: state.totalPrice,
+  };
+};
+
+export default connect(mapStateToProps)(ContactData);
