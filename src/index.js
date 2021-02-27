@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+// this is visible only on the add-redux branch
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
