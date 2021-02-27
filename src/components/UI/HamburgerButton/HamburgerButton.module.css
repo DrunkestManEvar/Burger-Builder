@@ -1,0 +1,40 @@
+.Hamburger {
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.Hamburger.clicked .HamburgerLine:first-child {
+  transform: rotate(45deg);
+}
+
+.Hamburger.clicked .HamburgerLine:nth-child(2) {
+  opacity: 0;
+}
+
+.Hamburger.clicked .HamburgerLine:last-child {
+  transform: rotate(-45deg);
+}
+
+.HamburgerLine {
+  display: block;
+  height: 4px;
+  width: 35px;
+  border-radius: 3px;
+  background-color: #eee;
+  transform-origin: left center;
+  transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1),
+    background 0.5s cubic-bezier(0.77, 0.2, 0.05, 1), opacity 0.55s ease;
+}
+
+.Hamburger:hover .HamburgerLine {
+  background-color: tomato;
+}
+
+@media only screen and (min-width: 500px) {
+  .Hamburger {
+    display: none;
+  }
+}

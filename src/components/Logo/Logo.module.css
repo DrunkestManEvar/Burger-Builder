@@ -1,0 +1,11 @@
+.LogoContainer {
+  background-color: #fff;
+  padding: 8px;
+  height: 80%;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.LogoContainer img {
+  height: 100%;
+}

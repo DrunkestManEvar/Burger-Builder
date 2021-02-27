@@ -1,0 +1,18 @@
+.CheckoutSummary {
+  width: 80%;
+  box-shadow: 0 0.7rem 1rem #eee;
+  margin: auto;
+  text-align: center;
+}
+
+.BurgerContainer {
+  width: 80%;
+  margin: 1rem auto;
+}
+
+.BtnsContainer {
+  display: flex;
+  justify-content: space-around;
+  width: 80%;
+  margin: 1rem auto;
+}

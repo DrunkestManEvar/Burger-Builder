@@ -1,0 +1,23 @@
+.Input {
+  width: 100%;
+  display: block;
+  outline: none;
+  padding: 7px 12px;
+  border: 1px solid #222;
+  border-radius: 5px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.Invalid {
+  border: 1px solid red;
+  box-shadow: 3px 3px 1rem red;
+}
+
+.Label {
+  font-weight: bold;
+  display: block;
+  text-transform: capitalize;
+  text-align: left;
+  margin-bottom: 8px;
+}
