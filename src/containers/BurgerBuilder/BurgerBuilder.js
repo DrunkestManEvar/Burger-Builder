@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actionTypes from '../../store/actions';
+import * as actionCreators from '../../store/actions/index';
+
 import Burger from '../../components/Burger/Burger';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+
 import axiosOrderInstance from '../../axios/axios-orders';
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
   state = {
     isPurchasing: false,
     loadingOrder: false,
@@ -26,20 +28,25 @@ class BurgerBuilder extends Component {
     return ingredientsSum > 0;
   };
 
-  purchasingHandler = () => this.setState({ isPurchasing: true });
+  purchasingHandler = () => {
+    // line below was added to replace the one in the confirmPurchaseHandler()
+    this.props.initPurchaseHandler();
+    if (!this.props.isAuthenticated) {
+      this.props.setAuthRedirectPathHandler('/checkout');
+      this.props.history.push('/auth');
+    } else this.setState({ isPurchasing: true });
+  };
 
   cancelPurchasingHandler = () => this.setState({ isPurchasing: false });
 
-  // componentDidMount() {
-  //   axiosOrderInstance
-  //     .get(
-  //       'https://burger-builder-f2984-default-rtdb.firebaseio.com/ingredients.json'
-  //     )
-  //     .then(response => this.setState({ ingredients: response.data }))
-  //     .catch(error => this.setState({ error: true }));
-  // }
+  componentDidMount() {
+    this.props.initIngredientsHandler();
+  }
 
-  confirmPurchaseHandler = () => this.props.history.push('/checkout');
+  confirmPurchaseHandler = () => {
+    // this.props.initPurchaseHandler();
+    this.props.history.push('/checkout');
+  };
 
   render() {
     let mainContent = <Burger ingredients={this.props.ingredients} />;
@@ -62,7 +69,7 @@ class BurgerBuilder extends Component {
             />
           )}
         </Modal>
-        {this.state.error ? (
+        {this.props.error ? (
           <p>Something went wrong... Please try again later</p>
         ) : (
           mainContent
@@ -73,6 +80,7 @@ class BurgerBuilder extends Component {
             removeIngredient={this.props.removeIngredientHandler}
             ingredients={this.props.ingredients}
             price={this.props.totalPrice}
+            isAuthenticated={this.props.isAuthenticated}
             canBuy={this.updateTotalIngredientsNum()}
             isPurchasing={this.purchasingHandler}
           />
@@ -84,17 +92,23 @@ class BurgerBuilder extends Component {
 
 const mapStateToProps = state => {
   return {
-    ingredients: state.ingredients,
-    totalPrice: state.totalPrice,
+    ingredients: state.burgerBuilder.ingredients,
+    totalPrice: state.burgerBuilder.totalPrice,
+    error: state.burgerBuilder.error,
+    isAuthenticated: state.auth.tokenId !== null,
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
+    initIngredientsHandler: () => dispatch(actionCreators.initIngredients()),
     addIngredientHandler: ingredientType =>
-      dispatch({ type: actionTypes.ADD_INGREDIENT, ingredientType }),
+      dispatch(actionCreators.addIngredient(ingredientType)),
     removeIngredientHandler: ingredientType =>
-      dispatch({ type: actionTypes.REMOVE_INGREDIENT, ingredientType }),
+      dispatch(actionCreators.removeIngredient(ingredientType)),
+    initPurchaseHandler: () => dispatch(actionCreators.initPurchase()),
+    setAuthRedirectPathHandler: path =>
+      dispatch(actionCreators.setAuthRedirectPath(path)),
   };
 };
 

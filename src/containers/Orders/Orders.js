@@ -1,37 +1,28 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import Order from '../../components/CheckoutSummary/Order/Order';
+import Spinner from '../../components/UI/Spinner/Spinner';
 import axiosOrderInstance from '../../axios/axios-orders';
 import classes from './Orders.module.css';
 
-class Orders extends Component {
-  state = {
-    orders: [],
-  };
+import * as actionCreators from '../../store/actions/index';
 
+class Orders extends Component {
   componentDidMount() {
-    axiosOrderInstance
-      .get('/orders.json')
-      .then(res => {
-        const fetchedOrders = [];
-        for (const orderKey in res.data) {
-          fetchedOrders.push({
-            ...res.data[orderKey],
-            id: orderKey,
-          });
-        }
-        this.setState({ orders: fetchedOrders });
-      })
-      .catch(err => console.error(err));
+    this.props.initOrdersFetchingHandler(this.props.tokenId, this.props.userId);
   }
 
   render() {
-    return (
+    return this.props.isLoading ? (
+      <Spinner />
+    ) : (
       <div className={classes.Orders}>
-        {this.state.orders.map(order => (
+        {this.props.orders.map(order => (
           <Order
             key={order.id}
             ingredients={order.ingredients}
-            price={order.price}
+            price={order.price.toFixed(2)}
           />
         ))}
       </div>
@@ -39,4 +30,23 @@ class Orders extends Component {
   }
 }
 
-export default Orders;
+const mapStateToProps = state => {
+  return {
+    orders: state.order.orders,
+    isLoading: state.order.isLoading,
+    tokenId: state.auth.tokenId,
+    userId: state.auth.userId,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    initOrdersFetchingHandler: (tokenId, userId) =>
+      dispatch(actionCreators.fetchOrdersAttempt(tokenId, userId)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withErrorHandler(Orders, axiosOrderInstance));

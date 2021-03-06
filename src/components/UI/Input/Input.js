@@ -45,7 +45,6 @@ const Input = props => {
       );
       break;
     default:
-      console.log(inputType);
       inputElement = (
         <input
           className={inputClasses.join(' ')}

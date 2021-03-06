@@ -10,10 +10,6 @@ class Modal extends Component {
     );
   }
 
-  componentDidUpdate() {
-    console.log('Modal updated');
-  }
-
   render() {
     const modalClasses = [classes.Modal];
 
